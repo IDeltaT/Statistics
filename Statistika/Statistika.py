@@ -15,7 +15,7 @@ from collections import Counter
 from math import sqrt, log10
 import matplotlib.pyplot as plt
 
-# File name: BitCoinCost.txt; Fish.txt; test.txt
+# File name: BitCoinCost.txt; Fish.txt; test.txt, data.txt
 
 def read_file(file_name):
     '''
@@ -368,7 +368,7 @@ def main():
     '''
 
     # Чтение и печать генеральной совокупности
-    X_gen = read_file('Fish.txt')
+    X_gen = read_file('data.txt')
 
 
     # Анализ генеральной совокупности
