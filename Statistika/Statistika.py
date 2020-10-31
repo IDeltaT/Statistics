@@ -6,8 +6,8 @@
 #   1.0     20.10.2020    Initial version
 #
 # Statistics 
-# (Нахождение Xген, Дисперсии, 
-# Сред.Квад.Отклонения, 
+# (Нахождение выборочного среднего, дисперсии, 
+# среднего квадратического отклонения, 
 # Построение Гистограммы и Полигона частот)
 #----------------------------------------------
 
@@ -25,7 +25,7 @@ def read_file(file_name):
     :type  file_name: str
     :format: новое значение с новой строки
 
-    :return: Возврощает список генеральной совокупности
+    :return: Возвращает список генеральной совокупности
     :rtype:  list
 
     Формат файла - каждое значение в новой строке.
@@ -61,7 +61,7 @@ def calculate_sample_mean(range_counter, sequence_len):
     :param sequence_len: Дина генеральной совокупности
     :type  sequence_len: int
 
-    :return: Возврощает выборочное среднее значение
+    :return: Возвращает выборочное среднее значение
     :rtype:  float
     '''
 
@@ -84,7 +84,7 @@ def calculate_dispersion(range_counter, sequence_len, sample_mean, type = 0):
     :param sequence_len: Дина совокупности
     :type  sequence_len: int
 
-    :param sample_mean: Выборочноге среднее значение
+    :param sample_mean: Выборочное среднее значение
     :type  sample_mean: float
 
     :param type: Тип дисперсии (default 0)
@@ -92,7 +92,7 @@ def calculate_dispersion(range_counter, sequence_len, sample_mean, type = 0):
     #alignment = 0: - Выборочная
     #alignment = 1: - Исправленная 
 
-    :return: Возврощает выборочную или исправленную дисперсию 
+    :return: Возвращает выборочную или исправленную дисперсию 
     :rtype:  float
     '''
 
@@ -114,10 +114,10 @@ def calculate_standard_deviation(dispersion):
     '''
     Вычисление среднего квадратического отклонения 
 
-    :param dispersion: Выборочная или исправленная дисперся 
+    :param dispersion: Выборочная или исправленная дисперсия 
     :type  dispersion: float
 
-    :return: Возврощает среднеее квадратическое отклонение 
+    :return: Возвращает среднее квадратическое отклонение 
     :rtype:  float
     '''
 
@@ -158,7 +158,7 @@ def optimal_partition(sequence_len):
     :param sequence_len: Дина совокупности
     :type  sequence_len: int
 
-    :return: Возврощает оптимальное разбиение по формуле Стерджеса
+    :return: Возвращает оптимальное разбиение по формуле Стерджеса
     :rtype:  int
     '''
 
@@ -204,7 +204,7 @@ def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
         ticks.append(sequence_min_copy)
         sequence_min_copy += interval_len
 
-    # Заполнение интервалов поподающими в них значениями
+    # Заполнение интервалов попадающими в них значениями
     for i in sequence:
         for j in intervals:
             key = list(j.keys())
@@ -295,7 +295,7 @@ def full_analysis_gen(sequence, type = 0, partition = 20, skip = 1, polygon = 1,
 
     print('\n\n')
 
-    # Счетчик елементов в совокупности
+    # Счетчик элементов в совокупности
     range_counter = Counter(sequence_sorted)
 
     range_counter_val = list(range_counter.values()) # Значения 
@@ -307,7 +307,6 @@ def full_analysis_gen(sequence, type = 0, partition = 20, skip = 1, polygon = 1,
         print('Среднее значение генеральной совокупности: ', sequence_average_value)
     else:
         print('Среднее значение выборки: ', sequence_average_value)
-
 
     # Расчет дисперсии
     dispersion = calculate_dispersion(range_counter, sequence_len, sequence_average_value, 0)
@@ -355,21 +354,20 @@ def sample(main_sequence, start = 0, stop = 1, step = 1):
 
     :return: Возвращает выборку из заданной совокупности
     :rtype:  list
-
     '''
+
     new_sequence = main_sequence[start - 1 : stop : step]
     return new_sequence
 
 
 def main():
     '''
-    Главная фунция.
+    Главная функция.
     Пример работы программы.
     '''
 
     # Чтение и печать генеральной совокупности
     X_gen = read_file('data.txt')
-
 
     # Анализ генеральной совокупности
     full_analysis_gen(X_gen, type = 0, partition = 20, skip = 1, polygon = 1, bar_graph = 1)
