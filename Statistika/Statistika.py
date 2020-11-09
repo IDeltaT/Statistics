@@ -166,8 +166,96 @@ def optimal_partition(sequence_len):
     return int(partition)
 
 
-def fill_intervals():
+def get_interval_len(sequence, partition, print_len = False):
+    '''
+    :param sequence: совокупность
+    :type  sequence: list
 
+    :param partition: Кол-во столбиков разбиения
+    :type  partition: int
+
+    :param print_len: Печать длины интервала (default False)
+    #print_len = True: - напечатать длину интервала
+    #print_len = False: - не печатать длину интервала
+    :type  print_len: bool
+
+    :return: Возвращает длину интервала
+    :rtype: int
+    '''
+
+    sequence_min = min(sequence)
+    sequence_max = max(sequence)
+
+    global_interval = sequence_max - sequence_min
+    interval_len = int(global_interval / partition)
+
+    if(print_len):
+        print("Общий интервал: ", global_interval)
+        print("Длина интервала: ", interval_len)
+
+    return(interval_len)
+
+
+def fill_intervals(sequence, partition, print_interval_val = False):
+    '''
+    Создание и заполнение интервалов.
+
+    :param sequence: совокупность
+    :type  sequence: list
+
+    :param partition: Кол-во столбиков разбиения
+    :type  partition: int
+
+    :param print_interval_val: Печать значений интервалов (default False)
+    #print_interval_val = True: - напечатать значения интервалов
+    #print_interval_val = False: - не печатать значения интервалов
+    :type  print_interval_val: bool
+
+    :return: Возвращает кортеж вида (intervals, ticks), где:
+    intervals - список интервалов вида:
+    {(start, end) : n}, где start - нижняя граница интервала, end - верхняя
+    граница интервала, n - количество попавших в этот интервал значений.
+    ticks - список границ интервалов (без повторений)
+    :rtype: tuple (intervals, ticks)
+    '''
+
+    sequence_min = min(sequence)
+    
+    # Нахождение длины интервала
+    interval_len = get_interval_len(sequence, partition, False)
+
+    intervals = []
+    ticks = []
+
+    # Добавление интервалов и заполнение делений по оси x
+    sequence_min_copy = sequence_min
+    for i in range(partition):
+        sequence_next = sequence_min_copy + interval_len
+        intervals.append({(sequence_min_copy, sequence_next) : 0})
+        ticks.append(sequence_min_copy)
+        sequence_min_copy += interval_len
+    
+    # Последняя граница интервала
+    ticks.append(sequence_next)
+
+    # Заполнение интервалов попадающими в них значениями
+    for i in sequence:
+        for j in intervals:
+            key = list(j.keys())
+            left_board = key[0][0]
+            right_board = key[0][1]
+            if (left_board <= i < right_board):
+                j[key[0]] += 1
+                continue
+
+    # Печать значений интервалов
+    if (print_interval_val):
+        n = 1
+        for i in intervals:
+            print('n' + str(n), list(i.keys())[0], '=', list(i.values())[0])
+            n += 1
+
+    return (intervals, ticks)
 
 
 def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
@@ -189,54 +277,19 @@ def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
     #auto_format_x = 1: - авто-поворот
     '''
 
-    sequence_min = min(sequence)
-    sequence_max = max(sequence)
-
-    global_interval = sequence_max - sequence_min
-    print("Общий интервал: ", global_interval)
-
-    interval_len = int(global_interval / partition)
-    print("Длина интервала: ", interval_len)
-
-    intervals = []
-    ticks = []
-
-    # Добавление интервалов и заполнение делений по оси x
-    sequence_min_copy = sequence_min
-    #for i in range(partition + 3):
-    for i in range(partition):
-        intervals.append({(sequence_min_copy, sequence_min_copy + interval_len) : 0})
-        ticks.append(sequence_min_copy)
-        sequence_min_copy += interval_len
-
-    # Заполнение интервалов попадающими в них значениями
-    for i in sequence:
-        for j in intervals:
-            key = list(j.keys())
-            left_board = key[0][0]
-            right_board = key[0][1]
-            if (left_board <= i < right_board):
-                j[key[0]] += 1
-                continue
-
-    #################################################################################
-    n = 1
-    for i in intervals:
-        print('n' + str(n), list(i.keys())[0], '=', list(i.values())[0])
-        n += 1
-
-    a = 92.3
-    D = 237.29000000000002
-
-
-
-    ##################################################################################
-
     heights = []
+
+    # Нахождение длины интервала
+    interval_len = get_interval_len(sequence, partition, False)
+
+    # Получаем заполненные интервалы
+    intervals, ticks = fill_intervals(sequence, partition)
 
     # Заполнение высот
     for i in intervals:
         heights.append(list(i.values())[0] / interval_len)
+    # Высота последнего интервала
+    heights.append(0) 
 
     x = ticks
     y = heights
@@ -293,6 +346,12 @@ def full_analysis_gen(sequence, type = 0, partition = 20, skip = 1, polygon = 1,
     :type  bar_graph: int
     #bar_graph = 0: - Построить гистограмму
     #bar_graph = 1: - Не строить гистограмму
+
+    :return: Возвращает кортеж вида (sequence_average_value, dispersion, deviation), где:
+    sequence_average_value - Среднее значение
+    dispersion - Дисперсия
+    deviation - Среднее квадратическое отклонение
+    :rtype: tuple (sequence_average_value, dispersion, deviation)
     '''
 
     sequence_len = len(sequence)
@@ -351,6 +410,9 @@ def full_analysis_gen(sequence, type = 0, partition = 20, skip = 1, polygon = 1,
     # Вывод гистограммы
     if(bar_graph):
         print_bar_graph(sequence_sorted, partition, skip)
+
+
+    return (sequence_average_value, dispersion, deviation)
 
 
 def sample(main_sequence, start = 0, stop = 1, step = 1):
@@ -421,10 +483,21 @@ def main():
     '''
 
     # Проверка критеря Пирсона 
-    full_analysis_gen(X_gen, type = 1, partition = 25, skip = 1, polygon = 0, bar_graph = 1)
+    characteristics = full_analysis_gen(X_gen, type = 1, partition = 25, skip = 1, polygon = 0, bar_graph = 1)
     print('Всего элементов: ', len(X_gen))
 
+    sequence_average_value = characteristics[0] # Среднее значение
+    dispersion = characteristics[1]             # Дисперсия
+    deviation = characteristics[2]              # Среднее квадратическое отклонение
+   
+    # Границы интервалов (без повторений)
+    ticks = fill_intervals(X_gen, 25)[1]
 
+    print(sequence_average_value)
+    print(dispersion)
+    print(deviation)
+    print(ticks)
+    
 
 if __name__ == "__main__":
     '''
