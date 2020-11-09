@@ -166,6 +166,10 @@ def optimal_partition(sequence_len):
     return int(partition)
 
 
+def fill_intervals():
+
+
+
 def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
     '''
     Печать Гистограммы.
@@ -199,7 +203,8 @@ def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
 
     # Добавление интервалов и заполнение делений по оси x
     sequence_min_copy = sequence_min
-    for i in range(partition + 3):
+    #for i in range(partition + 3):
+    for i in range(partition):
         intervals.append({(sequence_min_copy, sequence_min_copy + interval_len) : 0})
         ticks.append(sequence_min_copy)
         sequence_min_copy += interval_len
@@ -213,6 +218,19 @@ def print_bar_graph(sequence, partition = 20, skip = 1, auto_format_x = 0):
             if (left_board <= i < right_board):
                 j[key[0]] += 1
                 continue
+
+    #################################################################################
+    n = 1
+    for i in intervals:
+        print('n' + str(n), list(i.keys())[0], '=', list(i.values())[0])
+        n += 1
+
+    a = 92.3
+    D = 237.29000000000002
+
+
+
+    ##################################################################################
 
     heights = []
 
@@ -367,8 +385,9 @@ def main():
     '''
 
     # Чтение и печать генеральной совокупности
-    X_gen = read_file('data.txt')
+    X_gen = read_file('Fish.txt')
 
+    '''
     # Анализ генеральной совокупности
     full_analysis_gen(X_gen, type = 0, partition = 20, skip = 1, polygon = 1, bar_graph = 1)
     print('Всего элементов: ', len(X_gen))
@@ -399,6 +418,12 @@ def main():
     sequence_k = sample(X_gen, 2, len(X_gen), 3)
     full_analysis_gen(sequence_k, type = 1, partition = 20, skip = 3, polygon = 0, bar_graph = 0)
     print('Всего элементов: ', len(sequence_k))
+    '''
+
+    # Проверка критеря Пирсона 
+    full_analysis_gen(X_gen, type = 1, partition = 25, skip = 1, polygon = 0, bar_graph = 1)
+    print('Всего элементов: ', len(X_gen))
+
 
 
 if __name__ == "__main__":
