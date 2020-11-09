@@ -168,6 +168,8 @@ def optimal_partition(sequence_len):
 
 def get_interval_len(sequence, partition, print_len = False):
     '''
+    Нахождение длины интервала.
+
     :param sequence: совокупность
     :type  sequence: list
 
@@ -482,8 +484,8 @@ def main():
     print('Всего элементов: ', len(sequence_k))
     '''
 
-    # Проверка критеря Пирсона 
-    characteristics = full_analysis_gen(X_gen, type = 1, partition = 25, skip = 1, polygon = 0, bar_graph = 1)
+    # Проверка критерия Пирсона 
+    characteristics = full_analysis_gen(X_gen, type = 1, partition = 25, skip = 1, polygon = 0, bar_graph = 0)
     print('Всего элементов: ', len(X_gen))
 
     sequence_average_value = characteristics[0] # Среднее значение
@@ -491,12 +493,21 @@ def main():
     deviation = characteristics[2]              # Среднее квадратическое отклонение
    
     # Границы интервалов (без повторений)
-    ticks = fill_intervals(X_gen, 25)[1]
+    ticks = fill_intervals(X_gen, 25, True)[1]
 
-    print(sequence_average_value)
-    print(dispersion)
-    print(deviation)
-    print(ticks)
+    print('\n\n')
+    print('------------------------------------------------------------------------------------------------------------------')
+    print('\n\n')
+
+    # Подготовка значений для функции Лапласа
+    z = []
+    for x in ticks:
+        z.append((x-sequence_average_value)/deviation)
+    
+    n = 1
+    for i in z:
+        print('z' + str(n), '=', i)
+        n += 1
     
 
 if __name__ == "__main__":
